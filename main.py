@@ -1,40 +1,31 @@
 from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
-from langchain_openai import ChatOpenAI
-from langchain_ollama import ChatOllama
+from langchain_groq import ChatGroq
 
 load_dotenv()
 
 
 def main():
-    print("Hello from langchain-course!")
-    information = """
-    Elon Reeve Musk FRS (/ˈiːlɒn/ EE-lon; born June 28, 1971) is a businessman, known for his leadership of Tesla, SpaceX, X (formerly Twitter), and the Department of Government Efficiency (DOGE). Musk has been the wealthiest person in the world since 2021; as of May 2025, Forbes estimates his net worth to be US$424.7 billion.
+    print("Hello From Langchain!")
+    information="""
+    Hritik Rakesh Nagrath[1] (born 10 January 1974), known professionally as Hrithik Roshan (Hindi: [ˈɾɪt̪ɪk ɾoːʃən][2]), is an Indian actor and producer who works in Hindi cinema. Referred to as the millennial superstar,[3] he has portrayed a variety of characters and is known for his dancing skills. One of the highest-paid actors in India, he has won many awards, including six Filmfare Awards, of which four were for Best Actor. Starting from 2012, he has appeared in Forbes India's Celebrity 100 several times based on his income and popularity.
 
-Born to a wealthy family in Pretoria, South Africa, Musk emigrated in 1989 to Canada. He received bachelor's degrees from the University of Pennsylvania in 1997 before moving to California, United States, to pursue business ventures. In 1995, Musk co-founded the software company Zip2. Following its sale in 1999, he co-founded X.com, an online payment company that later merged to form PayPal, which was acquired by eBay in 2002. That year, Musk also became an American citizen.
-
-In 2002, Musk founded the space technology company SpaceX, becoming its CEO and chief engineer; the company has since led innovations in reusable rockets and commercial spaceflight. Musk joined the automaker Tesla as an early investor in 2004 and became its CEO and product architect in 2008; it has since become a leader in electric vehicles. In 2015, he co-founded OpenAI to advance artificial intelligence (AI) research but later left; growing discontent with the organization's direction and their leadership in the AI boom in the 2020s led him to establish xAI. In 2022, he acquired the social network Twitter, implementing significant changes and rebranding it as X in 2023. His other businesses include the neurotechnology company Neuralink, which he co-founded in 2016, and the tunneling company the Boring Company, which he founded in 2017.
-
-Musk was the largest donor in the 2024 U.S. presidential election, and is a supporter of global far-right figures, causes, and political parties. In early 2025, he served as senior advisor to United States president Donald Trump and as the de facto head of DOGE. After a public feud with Trump, Musk left the Trump administration and announced he was creating his own political party, the America Party.
-
-Musk's political activities, views, and statements have made him a polarizing figure, especially following the COVID-19 pandemic. He has been criticized for making unscientific and misleading statements, including COVID-19 misinformation and promoting conspiracy theories, and affirming antisemitic, racist, and transphobic comments. His acquisition of Twitter was controversial due to a subsequent increase in hate speech and the spread of misinformation on the service. His role in the second Trump administration attracted public backlash, particularly in response to DOGE.
+    Roshan has frequently collaborated with his father, Rakesh Roshan. He made brief appearances as a child actor in several films in the 1980s and later worked as an assistant director on four of his father's films. His first leading role was in the box-office success Kaho Naa... Pyaar Hai (2000), for which he received several awards. Performances in the 2000 terrorism drama Fiza and the 2001 ensemble family drama Kabhi Khushi Kabhie Gham consolidated his reputation but were followed by several poorly received films.
     """
 
     summary_template = """
-    given the information {information} about a person I want you to create:
-    1. A short summary
-    2. two interesting facts about them
+    You are a summarization engine. Your task is to summarize the following information in 2 sentences.
+    Information: {information}
     """
 
-    summary_prompt_template = PromptTemplate(
-        input_variables=["information"], template=summary_template
-    )
+    summary_prompt = PromptTemplate.from_template(summary_template)
 
-    # llm = ChatOllama(temperature=0, model="gemma3:270m")
-    llm = ChatOpenAI(temperature=0, model="gpt-5")
-    chain = summary_prompt_template | llm
+    llm = ChatGroq(model_name="llama-3.1-8b-instant", temperature=0.7)
 
-    response = chain.invoke(input={"information": information})
+    chain = summary_prompt | llm
+
+    response = chain.invoke({"information": information})
+
     print(response.content)
 
 if __name__ == "__main__":
